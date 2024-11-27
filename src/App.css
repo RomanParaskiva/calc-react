@@ -411,6 +411,7 @@
   cursor: pointer;
   font-size: 20px;
   line-height: 130%;
+  width: 100%;
 }
 
 .dates_swiper__row.active .dates_swiper__number {

@@ -33,13 +33,23 @@ const groupByMonth = (data) => {
     return acc;
   }, {});
 };
+const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
 
 const DateChoice = () => {
   const [dates, setDates] = useState([]);
-  const { setArrivalDate, arrivalDate } = useStore();
+  const [allowedLengths, setAllowedLengths] = useState([]);
+  const { setArrivalDate, arrivalDate, rooms } = useStore();
   useEffect(() => {
-    axios.get('https://kivach.ru/calc-new/api_new.php?method=program_dates').then(({data}) => setDates(() => groupByMonth(data.res)))
-  },[]);
+    if (rooms.length > 0)
+      setAllowedLengths(Array.from(
+      new Set(
+        rooms.flatMap(room =>
+          room.people.map(person => person.program_length).filter(Boolean)
+        )
+      )
+    ));
+    axios.get(`https://kivach.ru/calc-new/api_new.php?method=program_dates&lengths`).then(({ data }) => setDates(() => groupByMonth(data.res)))
+  },[rooms]);
 
   const handleClickOnDate = (item) => {
     setArrivalDate(item.date);
@@ -65,9 +75,12 @@ const DateChoice = () => {
                     <h2>
                       {monthNames[month - 1]} {year}
                     </h2>
-                      {items.map((item) => (
+                      {items.filter(item => {
+                          const lengthsArray = item.lengths.split(', ').map(length => length.trim());
+                          return lengthsArray.some(length => allowedLengths.includes(length));
+                      }).map((item) => (
                         <div onClick={() => handleClickOnDate(item)} key={item.date} className={clsx(['dates_swiper__row', item.date === arrivalDate && 'active'])}>
-                          <div className='dates_swiper__number'>{item.d}</div> Воскресенье
+                          <div className='dates_swiper__number'>{item.d}</div> {days[new Date(item.date).getDay()]}
                         </div>
                       ))}
                   </div>
