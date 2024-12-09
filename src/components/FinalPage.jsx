@@ -15,8 +15,10 @@ const FinalPage = () => {
   const detailsRef = useRef(null);
 
   const addDaysAndFormat = (dateStr, daysNum) => {
+    let offset = 1;
+    if (dateStr.startsWith('2025-01-03')) offset = 2;
     const date = new Date(dateStr);
-    date.setDate(date.getDate() + +daysNum);
+    date.setDate(date.getDate() + +daysNum - offset);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -102,8 +104,8 @@ const FinalPage = () => {
                     <option value="18">18 часов</option>
                     <option value="19">19 часов</option>
                     <option value="20">20 часов</option>
-                    <option value="21">21 часов</option>
-                    <option value="22">22 часов</option>
+                    <option value="21">21 час</option>
+                    <option value="22">22 часа</option>
                   </select>
                   <select id="call-minutes" name="call-minutes">
                     <option value="0">0 минут</option>

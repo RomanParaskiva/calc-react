@@ -44,7 +44,7 @@ const DateChoice = () => {
       setAllowedLengths(Array.from(
       new Set(
         rooms.flatMap(room =>
-          room.people.map(person => person.program_length).filter(Boolean)
+          room.people.map(person => Number(person.program_length)).filter(Boolean)
         )
       )
     ));
@@ -76,8 +76,8 @@ const DateChoice = () => {
                       {monthNames[month - 1]} {year}
                     </h2>
                       {items.filter(item => {
-                          const lengthsArray = item.lengths.split(', ').map(length => length.trim());
-                          return lengthsArray.some(length => allowedLengths.includes(length));
+                          const lengthsArray = item.lengths.split(', ').map(length => Number(length.trim()));
+                          return allowedLengths.every(length => lengthsArray.includes(length));
                       }).map((item) => (
                         <div onClick={() => handleClickOnDate(item)} key={item.date} className={clsx(['dates_swiper__row', item.date === arrivalDate && 'active'])}>
                           <div className='dates_swiper__number'>{item.d}</div> {days[new Date(item.date).getDay()]}

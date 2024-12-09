@@ -29,6 +29,11 @@ const ProgramChoice = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [currentRoom, setCurrentRoom] = useState(null);
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+
+  useEffect(() => {
+    setIsBtnDisabled(() => !rooms[activeRoom].people.every(ppl => (!!ppl.program.id && !!ppl.program_type.id && ppl.program_length.length > 0)))
+  },[activeRoom, rooms])
 
   useEffect(() => {
     rooms?.length && setCurrentRoom(() => rooms.find(room => (room.id === activeRoom)));
@@ -48,16 +53,18 @@ const ProgramChoice = () => {
     }
 
     currentRoom !== null &&  getPrograms();
-  }, [activeGuest, currentRoom?.apartment, currentRoom?.people]);
+  }, [activeGuest, currentRoom, currentRoom?.apartment, currentRoom?.people]);
+
+  const checkPeopleProgram = (ppl) => (!!ppl.program.id && !!ppl.program_type.id && ppl.program_length.length > 0)
   
   return (
     <>
-      <LeftHeader backAction={null} nextAction={null} isBtnDisabled={false} />
+      <LeftHeader backAction={null} nextAction={() => setCurrentRoom(prev => prev + 1)} isBtnDisabled={isBtnDisabled} />
       <div className='main__wrapper'>
         <div className='tab__header'>
           {currentRoom !== null && currentRoom?.people.map(
             (item, idx) => (
-              <span key={item.name + idx} className={clsx([idx === activeGuest && 'active'])} onClick={() => {}}>
+              <span key={item.name + idx} className={clsx([idx === activeGuest && 'active', checkPeopleProgram(item) && 'green'])} onClick={() => setActiveGuest(idx)}>
                 {item.name}
               </span>
             ))}

@@ -12,7 +12,6 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  max-width: 1110px;
   height: 100%;
   margin: 0 auto;
 }
@@ -121,6 +120,7 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 300px;
 }
 
 .main__header {
@@ -357,10 +357,15 @@
   color: #4F5252;
 }
 
+.tab__header>span.green {
+  color: #00B85D;
+}
+
 .content__wrapper {
   display: flex;
   gap: 20px;
   position: relative;
+  justify-content: space-between;
 }
 
 .right_panel {
@@ -598,6 +603,11 @@
 }
 
 @media (max-width: 768px) {
+
+  * {
+    font-size: 16px;
+    line-height: 20px;
+  }
   .people_count {
     grid-template-columns: 1fr;
   }
@@ -625,11 +635,53 @@
     font-size: 16px;
   }
 
+  .tab__header>span.green {
+    color: #00B85D;
+  }
+
   .final__content--wrapper {
     flex-direction: column;
   }
 
-  .button {
+  .custom-button {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .left__header button {
+    height: 36px;
+  }
+
+  .custom-button.wide,
+  .custom-button.small {
+    padding: 8px 18px;
+  }
+
+  .program_list label {
+    font-size: 20px;
+  }
+
+  .dates_swiper__row{
+    justify-content: center;
+  }
+
+  .dates_swiper__number {
+    width: 30px;
+    height: 30px;
+    line-height: 140%;
+  }
+
+  .success_text {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .dates_swiper__slide {
+    gap: 12px;
+  }
+
+  .delete_room {
     font-size: 18px;
   }
+  
 }

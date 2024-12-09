@@ -25,7 +25,6 @@ const getTitle = (step, currentRoomId) => {
 
 const handleStepTwo = (rooms, setActiveRoom, setActiveGuest, currentRoom, increaseStep, decreaseStep, setIsBtnDisabled, reverse) => {
   if (reverse) {
-    // Логика для обратного действия
     const prevRoomIndex = currentRoom.id - 1;
 
     if (prevRoomIndex >= 0) {
@@ -39,12 +38,12 @@ const handleStepTwo = (rooms, setActiveRoom, setActiveGuest, currentRoom, increa
 
     if (nextRoomIndex < rooms.length) {
       setActiveRoom(rooms[nextRoomIndex].id);
-      setIsBtnDisabled(true);
     } else {
       increaseStep();
       setActiveRoom(rooms[0].id);
       setActiveGuest(0);
     }
+    setIsBtnDisabled(true);
   }
 };
 
@@ -76,7 +75,7 @@ const handleStepThree = (rooms, setActiveRoom, currentRoom, activeGuest = 0, set
         setActiveGuest(0);
         setActiveRoom(rooms[nextRoomIndex].id);
         setIsBtnDisabled(true);
-      } else {
+      } else { 
         setActiveRoom(rooms[0].id);
         setIsBtnDisabled(true);
         increaseStep();
@@ -85,9 +84,10 @@ const handleStepThree = (rooms, setActiveRoom, currentRoom, activeGuest = 0, set
   }
 };
 
-const handleStepFour = (rooms, arrivalDate, updatePrice, increaseStep, decreaseStep, reverse) => {
+const handleStepFour = (rooms, arrivalDate, setArrivalDate, updatePrice, increaseStep, decreaseStep, reverse) => {
   if (reverse) {
-    decreaseStep()
+    setArrivalDate(null);
+    decreaseStep();
   } else {
     const getProgramPrice = async (
       program_id, program_type, program_length, guest_id, room_id, arrivalDate) => {
@@ -105,7 +105,13 @@ const handleStepFour = (rooms, arrivalDate, updatePrice, increaseStep, decreaseS
 }
 
 const LeftHeader = ({ isBtnDisabled = false, setIsBtnDisabled = () => { } }) => {
-  const { step, increaseStep, decreaseStep, rooms, setActiveRoom, activeRoom, activeGuest, setActiveGuest, arrivalDate, updatePrice } = useStore((state) => state);
+  const { step, increaseStep, decreaseStep, rooms, setActiveRoom, setArrivalDate, activeRoom, activeGuest, setActiveGuest, arrivalDate, updatePrice } = useStore((state) => state);
+
+  const scrollToTop = () => {
+    setTimeout(() => {
+      window.scrollTo({top: document.querySelector('.left__header')?.getBoundingClientRect()?.bottom || 0, behavior: 'smooth'})
+    },0)
+  }
 
   const backIsVisible = step > 1;
 
@@ -114,6 +120,7 @@ const LeftHeader = ({ isBtnDisabled = false, setIsBtnDisabled = () => { } }) => 
   const currentRoom = rooms.find(item => item.id === activeRoom) || rooms[0];
 
   const handleNextStep = () => {
+    scrollToTop();
     switch (step) {
       case 1:
         increaseStep();
@@ -125,11 +132,11 @@ const LeftHeader = ({ isBtnDisabled = false, setIsBtnDisabled = () => { } }) => 
         break;
 
       case 3:
-        handleStepThree(rooms, setActiveRoom, currentRoom, activeGuest, setActiveGuest, increaseStep, decreaseStep, setIsBtnDisabled, false);
+        handleStepTwo(rooms, setActiveRoom, setActiveGuest, currentRoom, increaseStep, decreaseStep, setIsBtnDisabled, false);
         break;
 
       case 4:
-        handleStepFour(rooms, arrivalDate, updatePrice, increaseStep, decreaseStep, false);
+        handleStepFour(rooms, arrivalDate, setArrivalDate, updatePrice, increaseStep, decreaseStep, false);
         break;
 
       default:
@@ -138,6 +145,7 @@ const LeftHeader = ({ isBtnDisabled = false, setIsBtnDisabled = () => { } }) => 
   }
 
   const handlePrevStep = () => {
+    scrollToTop();
     switch (step) {
       case 1:
         break;
@@ -151,7 +159,7 @@ const LeftHeader = ({ isBtnDisabled = false, setIsBtnDisabled = () => { } }) => 
         break;
 
       case 4:
-        handleStepFour(rooms, arrivalDate, updatePrice, increaseStep, decreaseStep, true);
+        handleStepFour(rooms, arrivalDate, setArrivalDate, updatePrice, increaseStep, decreaseStep, true);
         break;
 
       default:
